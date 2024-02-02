@@ -1,0 +1,82 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+enum UserType {
+    organization
+    volunteer
+    not_assigned
+}
+
+model User {
+    id                 String          @id @unique @default(uuid())
+    user_type          UserType        @default(not_assigned)
+    name               String?
+    email              String?
+    phone              String?
+    address            String?
+    interests          String[]        @default([])
+    createdAt          DateTime        @default(now())
+    updatedAt          DateTime        @updatedAt
+    OpportunityCreated Opportunity[]
+    Application        Application[]
+    WorkSpace          Workspace[]
+    WorkSpaceUser      WorkspaceUser[]
+}
+
+model Opportunity {
+    id          Int           @id @default(autoincrement())
+    title       String
+    details     String?
+    location    String?
+    start_date  DateTime
+    end_date    DateTime
+    views       Int           @default(0)
+    is_deleted  Boolean       @default(false)
+    is_active   Boolean       @default(true)
+    createdAt   DateTime      @default(now())
+    updatedAt   DateTime      @updatedAt
+    owner       User          @relation(fields: [ownerId], references: [id])
+    ownerId     String
+    Application Application[]
+}
+
+model Application {
+    id            Int         @id @default(autoincrement())
+    createdAt     DateTime    @default(now())
+    updatedAt     DateTime    @updatedAt
+    applicant     User        @relation(fields: [applicantId], references: [id])
+    applicantId   String
+    opportunity   Opportunity @relation(fields: [opportunityId], references: [id])
+    opportunityId Int
+    message       String?
+}
+
+model Workspace {
+    id            Int             @id @default(autoincrement())
+    name          String
+    details       String?
+    createdAt     DateTime        @default(now())
+    updatedAt     DateTime        @updatedAt
+    owner         User            @relation(fields: [ownerId], references: [id])
+    ownerId       String
+    WorkSpaceUser WorkspaceUser[]
+}
+
+model WorkspaceUser {
+    id          Int       @id @default(autoincrement())
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
+    user        User      @relation(fields: [userId], references: [id])
+    userId      String
+    workspace   Workspace @relation(fields: [workspaceId], references: [id])
+    workspaceId Int
+}
