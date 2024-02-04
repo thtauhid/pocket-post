@@ -15,32 +15,14 @@ enum ProviderType {
 }
 
 model User {
-    id           String         @id @unique
-    createdAt    DateTime       @default(now())
-    updatedAt    DateTime       @updatedAt
-    ApiKey       ApiKey[]
-    UserSettings UserSettings[]
-    SentEmail    SentEmail[]
-    Tracking     Tracking[]
-}
-
-model ApiKey {
-    id        Int           @id @unique @default(autoincrement())
-    key       String?
-    provider  ProviderType?
-    user      User          @relation(fields: [userId], references: [id])
-    userId    String
-    createdAt DateTime      @default(now())
-    updatedAt DateTime      @updatedAt
-}
-
-model UserSettings {
-    id                     Int      @id @unique @default(autoincrement())
-    user                   User     @relation(fields: [userId], references: [id])
-    userId                 String
-    default_reply_to_email String?
-    createdAt              DateTime @default(now())
-    updatedAt              DateTime @updatedAt
+    id                     String       @id @unique
+    api_key                String
+    provider               ProviderType
+    default_reply_to_email String
+    SentEmail              SentEmail[]
+    Tracking               Tracking[]
+    createdAt              DateTime     @default(now())
+    updatedAt              DateTime     @updatedAt
 }
 
 model SentEmail {
@@ -57,12 +39,12 @@ model SentEmail {
 }
 
 model Tracking {
-    id        Int       @id @unique @default(autoincrement())
-    user      User      @relation(fields: [userId], references: [id])
+    id        Int        @id @unique @default(autoincrement())
+    user      User       @relation(fields: [userId], references: [id])
     userId    String
-    email     SentEmail @relation(fields: [emailId], references: [id])
-    emailId   Int
-    opens     Int       @default(0)
-    createdAt DateTime  @default(now())
-    updatedAt DateTime  @updatedAt
+    email     SentEmail? @relation(fields: [emailId], references: [id])
+    emailId   Int?
+    opens     Int        @default(0)
+    createdAt DateTime   @default(now())
+    updatedAt DateTime   @updatedAt
 }

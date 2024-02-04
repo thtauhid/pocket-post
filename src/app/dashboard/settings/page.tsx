@@ -21,6 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { toast } from "sonner";
 
 const providers = [
   {
@@ -64,7 +65,11 @@ export default function SettingsPage() {
 
     const result = await data.json();
 
-    console.log({ result });
+    if (result) {
+      toast("Updated successfully");
+    } else {
+      toast("Failed to update");
+    }
   }
   return (
     <div className="">
