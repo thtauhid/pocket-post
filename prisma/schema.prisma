@@ -15,7 +15,7 @@ enum ProviderType {
 }
 
 model User {
-    id           String         @id @unique @default(uuid())
+    id           String         @id @unique
     createdAt    DateTime       @default(now())
     updatedAt    DateTime       @updatedAt
     ApiKey       ApiKey[]
@@ -25,7 +25,7 @@ model User {
 }
 
 model ApiKey {
-    id        String        @id @unique @default(uuid())
+    id        Int           @id @unique @default(autoincrement())
     key       String?
     provider  ProviderType?
     user      User          @relation(fields: [userId], references: [id])
@@ -35,7 +35,7 @@ model ApiKey {
 }
 
 model UserSettings {
-    id                     String   @id @unique @default(uuid())
+    id                     Int      @id @unique @default(autoincrement())
     user                   User     @relation(fields: [userId], references: [id])
     userId                 String
     default_reply_to_email String?
@@ -44,7 +44,7 @@ model UserSettings {
 }
 
 model SentEmail {
-    id        String     @id @unique @default(uuid())
+    id        Int        @id @unique @default(autoincrement())
     user      User       @relation(fields: [userId], references: [id])
     userId    String
     from      String
@@ -57,11 +57,11 @@ model SentEmail {
 }
 
 model Tracking {
-    id        String    @id @unique @default(uuid())
+    id        Int       @id @unique @default(autoincrement())
     user      User      @relation(fields: [userId], references: [id])
     userId    String
     email     SentEmail @relation(fields: [emailId], references: [id])
-    emailId   String
+    emailId   Int
     opens     Int       @default(0)
     createdAt DateTime  @default(now())
     updatedAt DateTime  @updatedAt

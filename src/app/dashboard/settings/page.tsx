@@ -38,7 +38,7 @@ const formSchema = z.object({
   api_key: z.string().min(1, {
     message: "API Key is required",
   }),
-  default_replyto: z
+  default_reply_to: z
     .string()
     .email({
       message: "Invalid email address",
@@ -52,12 +52,19 @@ export default function SettingsPage() {
     defaultValues: {
       provider: "resend",
       api_key: "",
-      default_replyto: "",
+      default_reply_to: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const data = await fetch("/api/user", {
+      method: "POST",
+      body: JSON.stringify(values),
+    });
+
+    const result = await data.json();
+
+    console.log({ result });
   }
   return (
     <div className="">
@@ -115,7 +122,7 @@ export default function SettingsPage() {
 
             <FormField
               control={form.control}
-              name="default_replyto"
+              name="default_reply_to"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Default Reply To</FormLabel>
