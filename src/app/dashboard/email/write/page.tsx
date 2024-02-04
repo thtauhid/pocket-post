@@ -56,7 +56,7 @@ export default function SettingsPage() {
   return (
     <div className="">
       <h1 className="font-bold text-2xl border-b border-b-stone-400 p-4">
-        Email {">"} Write
+        Write Email
       </h1>
 
       <div className="m-4 p-4">
@@ -122,7 +122,7 @@ export default function SettingsPage() {
               )}
             />
 
-            <Button type="submit">Save</Button>
+            <Button type="submit">Send</Button>
           </form>
         </Form>
       </div>

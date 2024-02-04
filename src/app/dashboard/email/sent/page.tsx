@@ -32,7 +32,7 @@ export default function SentBox() {
   return (
     <div className="">
       <h1 className="font-bold text-2xl border-b border-b-stone-400 p-4">
-        Email {">"} Sent Box
+        Sent Emails
       </h1>
       <div className="py-4">
         <Table className="">

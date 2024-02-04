@@ -60,10 +60,12 @@ export default function SettingsPage() {
     console.log(values);
   }
   return (
-    <div className="p-4 m-4">
-      <h1 className="font-bold text-2xl">Settings</h1>
+    <div className="">
+      <h1 className="font-bold text-2xl border-b border-b-stone-400 p-4">
+        Settings
+      </h1>
 
-      <div className="mt-4">
+      <div className="m-4 p-4">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
