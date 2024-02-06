@@ -11,25 +11,6 @@ import {
 import prisma from "@/lib/prisma";
 import { auth } from "@clerk/nextjs";
 
-const datax = [
-  {
-    id: "E01",
-    title: "Hello",
-    from: "thtauhid.71@gmail.com",
-    to: "tht@hy.com",
-    views: 1,
-    time: "10:00 AM",
-  },
-  {
-    id: "E02",
-    title: "Project",
-    from: "dssf@fd.vov",
-    to: "sf@fff.com",
-    views: 0,
-    time: "11:00 AM",
-  },
-];
-
 export default async function SentBox() {
   const { userId } = auth();
   const data = await prisma.sentEmail.findMany({
