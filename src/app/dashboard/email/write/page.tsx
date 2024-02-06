@@ -22,6 +22,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import prisma from "@/lib/prisma";
+import { toast } from "sonner";
 
 const from_addresses = [
   {
@@ -35,6 +37,7 @@ const from_addresses = [
 ];
 
 const formSchema = z.object({
+  subject: z.string(),
   from_address: z.string(),
   to_address: z.string(),
   body: z.string(),
@@ -44,15 +47,32 @@ export default function SettingsPage() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      subject: "",
       from_address: "",
       to_address: "",
       body: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const response = await fetch("/api/email", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(values),
+    });
+
+    if (response.ok) {
+      toast.success("Email sent successfully");
+      console.log("Email sent successfully");
+      const data = await response.json();
+      console.log({ data });
+    } else {
+      toast.error("Failed to send email");
+    }
   }
+
   return (
     <div className="">
       <h1 className="font-bold text-2xl border-b border-b-stone-400 p-4">
@@ -62,6 +82,23 @@ export default function SettingsPage() {
       <div className="m-4 p-4">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="subject"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Subject</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    Write the email subject here.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <FormField
               control={form.control}
               name="from_address"
@@ -101,7 +138,9 @@ export default function SettingsPage() {
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
-                  <FormDescription>Enter your API key.</FormDescription>
+                  <FormDescription>
+                    Enter the recipient email address.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
