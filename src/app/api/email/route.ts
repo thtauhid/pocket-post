@@ -13,13 +13,28 @@ export async function POST(req: Request) {
     },
   });
 
+  // Check if user has an API key
+  if (!user?.api_key) {
+    return NextResponse.json({
+      message: "User does not have an API key",
+    });
+  }
+
   const resend_email = await send_resend({
-    apiKey: user?.api_key!,
+    apiKey: user.api_key!,
     from: body.from_address,
     to: body.to_address,
     subject: body.subject,
     text: body.body,
   });
+
+  // Check if email was sent
+  if (!resend_email.data?.id) {
+    return NextResponse.json({
+      message: "Failed to send email",
+      error: resend_email.error,
+    });
+  }
 
   const emailRes = await prisma.sentEmail.create({
     data: {
@@ -28,6 +43,7 @@ export async function POST(req: Request) {
       to: body.to_address,
       subject: body.subject,
       body: body.body,
+      provider_email_id: resend_email.data.id,
     },
   });
 
