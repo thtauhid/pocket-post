@@ -38,15 +38,19 @@ type Props = {
 };
 
 export default function Stats(props: Props) {
-  // Emails
-  const emailLabels = Array.from(
+  // Dates
+  // Past 7 days
+  const dateLabels = Array.from(
     new Set(
-      props.emails
-        .map((email) => email.createdAt.toISOString().split("T")[0])
-        .sort()
+      Array.from({ length: 7 }, (_, i) => {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        return date.toISOString().split("T")[0];
+      })
     )
-  );
+  ).sort();
 
+  // Emails
   const updatedEmails = props.emails.map((email) => {
     return {
       ...email,
@@ -55,11 +59,11 @@ export default function Stats(props: Props) {
   });
 
   const emailData = {
-    labels: emailLabels,
+    labels: dateLabels,
     datasets: [
       {
         label: "Sent",
-        data: emailLabels.map(
+        data: dateLabels.map(
           (label) =>
             updatedEmails.filter((email) => email.createdAt === label).length
         ),
@@ -70,14 +74,6 @@ export default function Stats(props: Props) {
   };
 
   // Tracking
-  const trackingLabels = Array.from(
-    new Set(
-      props.emails
-        .map((email) => email.createdAt.toISOString().split("T")[0])
-        .sort()
-    )
-  );
-
   const updatedTracking = props.tracking.map((track) => {
     return {
       ...track,
@@ -86,11 +82,11 @@ export default function Stats(props: Props) {
   });
 
   const trackingData = {
-    labels: trackingLabels,
+    labels: dateLabels,
     datasets: [
       {
         label: "Tracked",
-        data: trackingLabels.map(
+        data: dateLabels.map(
           (label) =>
             updatedTracking.filter((track) => track.createdAt === label).length
         ),
@@ -99,7 +95,7 @@ export default function Stats(props: Props) {
       },
       {
         label: "Opened",
-        data: trackingLabels.map(
+        data: dateLabels.map(
           (label) =>
             updatedTracking
               .filter((track) => track.createdAt === label)
