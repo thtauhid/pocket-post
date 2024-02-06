@@ -56,12 +56,14 @@ export async function POST(req: Request) {
       id: clerk_user.id,
       provider: data.provider,
       api_key: data.api_key,
+      default_from_email: data.default_from,
       default_reply_to_email: data.default_reply_to,
     },
 
     update: {
       provider: data.provider,
       api_key: data.api_key,
+      default_from_email: data.default_from,
       default_reply_to_email: data.default_reply_to,
     },
   });
