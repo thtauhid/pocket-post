@@ -50,9 +50,6 @@ export default function WriteEmailForm(props: Props) {
 
     if (response.ok) {
       toast.success("Email sent successfully");
-      console.log("Email sent successfully");
-      const data = await response.json();
-      console.log({ data });
     } else {
       toast.error("Failed to send email");
     }

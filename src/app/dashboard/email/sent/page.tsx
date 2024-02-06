@@ -22,8 +22,6 @@ export default async function SentBox() {
     },
   });
 
-  console.log({ data });
-
   return (
     <div className="">
       <h1 className="font-bold text-2xl border-b border-b-stone-400 p-4">
