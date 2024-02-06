@@ -8,8 +8,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import prisma from "@/lib/prisma";
+import { auth } from "@clerk/nextjs";
 
-const data = [
+const datax = [
   {
     id: "E01",
     title: "Hello",
@@ -28,7 +30,19 @@ const data = [
   },
 ];
 
-export default function SentBox() {
+export default async function SentBox() {
+  const { userId } = auth();
+  const data = await prisma.sentEmail.findMany({
+    where: {
+      userId: userId!,
+    },
+    include: {
+      Tracking: true,
+    },
+  });
+
+  console.log({ data });
+
   return (
     <div className="">
       <h1 className="font-bold text-2xl border-b border-b-stone-400 p-4">
@@ -43,7 +57,7 @@ export default function SentBox() {
               <TableHead>From</TableHead>
               <TableHead>To</TableHead>
               <TableHead>Time</TableHead>
-              <TableHead>Viewed</TableHead>
+              <TableHead>Opens</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -51,11 +65,13 @@ export default function SentBox() {
             {data.map((item) => (
               <TableRow key={item.id}>
                 <TableCell>{item.id}</TableCell>
-                <TableCell>{item.title}</TableCell>
+                <TableCell>{item.subject}</TableCell>
                 <TableCell>{item.from}</TableCell>
                 <TableCell>{item.to}</TableCell>
-                <TableCell>{item.time}</TableCell>
-                <TableCell>{item.views > 0 ? "✔️" : "❌"}</TableCell>
+                <TableCell>{item.createdAt.toISOString()}</TableCell>
+                <TableCell>
+                  {item.Tracking.length > 0 ? item.Tracking[0].opens : "-"}
+                </TableCell>
                 <TableCell className="text-right">
                   <Button>View</Button>
                 </TableCell>
