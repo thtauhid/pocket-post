@@ -22,16 +22,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
+import prisma from "@/lib/prisma";
 
 const providers = [
   {
     label: "Resend",
     value: "resend",
   },
-  {
-    label: "Mailgun",
-    value: "mailgun",
-  },
+  // {
+  //   label: "Mailgun",
+  //   value: "mailgun",
+  // },
 ];
 
 const formSchema = z.object({
@@ -71,6 +72,7 @@ export default function SettingsPage() {
       toast("Failed to update");
     }
   }
+
   return (
     <div className="">
       <h1 className="font-bold text-2xl border-b border-b-stone-400 p-4">
