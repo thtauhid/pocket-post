@@ -1,11 +1,25 @@
 import prisma from "@/lib/prisma";
+import { send_resend } from "@/lib/resend";
 import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   const { userId } = auth();
   const body = await req.json();
-  console.log(body);
+
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId!,
+    },
+  });
+
+  const resend_email = await send_resend({
+    apiKey: user?.api_key!,
+    from: body.from_address,
+    to: body.to_address,
+    subject: body.subject,
+    text: body.body,
+  });
 
   const emailRes = await prisma.sentEmail.create({
     data: {
@@ -29,6 +43,7 @@ export async function POST(req: Request) {
     data: {
       email: emailRes,
       tracking: trackingRes,
+      resend_email,
     },
   });
 }

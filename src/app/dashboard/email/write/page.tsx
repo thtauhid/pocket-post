@@ -22,19 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import prisma from "@/lib/prisma";
 import { toast } from "sonner";
-
-const from_addresses = [
-  {
-    label: "Official",
-    value: "info@tauhid.dev",
-  },
-  {
-    label: "Personal",
-    value: "thtauhid.71@gmail.com",
-  },
-];
 
 const formSchema = z.object({
   subject: z.string(),
@@ -105,26 +93,17 @@ export default function SettingsPage() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>From</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a from address" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {from_addresses.map((addr) => (
-                        <SelectItem key={addr.value} value={addr.value}>
-                          {addr.label} ({addr.value})
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
                   <FormDescription>
-                    Select a verified email to display.
+                    Enter the sender email address.{" "}
+                    <b>
+                      Please ensure this email is verified with your email
+                      provider.
+                    </b>
                   </FormDescription>
+                  <FormMessage />
                 </FormItem>
               )}
             />
