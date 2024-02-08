@@ -44,6 +44,7 @@ export async function GET(
 
     const headers = new Headers(h);
     headers.set("Cache-Control", REVALIDATE);
+    headers.set("Content-Type", "image/jpeg");
 
     return new NextResponse(stream, {
       status: 200,
