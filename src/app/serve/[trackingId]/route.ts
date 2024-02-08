@@ -12,10 +12,11 @@ export async function GET(
   });
 
   return new ImageResponse(Dot(), {
-    width: 1,
-    height: 1,
+    width: 100,
+    height: 100,
     headers: {
-      "Content-Type": "image/gif",
+      // mime type for png image
+      "Content-Type": "image/png",
     },
   });
 }

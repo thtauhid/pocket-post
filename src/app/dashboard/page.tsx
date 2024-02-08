@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import Stats from "./stats";
 import { Separator } from "@/components/ui/separator";
+import Image from "next/image";
 
 export default async function DashboardPage() {
   const { userId } = auth();
