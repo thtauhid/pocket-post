@@ -19,7 +19,7 @@ export async function send_resend({
     from,
     to: Array.isArray(to) ? to : [to],
     subject,
-    text,
+    html: text,
   });
 
   return result;

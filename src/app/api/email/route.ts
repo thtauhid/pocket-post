@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import { processEmail } from "@/lib/processEmail";
 import { send_resend } from "@/lib/resend";
 import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
@@ -20,19 +21,25 @@ export async function POST(req: Request) {
     });
   }
 
-  const resend_email = await send_resend({
+  const trackingRes = await prisma.tracking.create({
+    data: {
+      userId: userId!,
+    },
+  });
+
+  const send_email = await send_resend({
     apiKey: user.api_key!,
     from: body.from_address,
     to: body.to_address,
     subject: body.subject,
-    text: body.body,
+    text: processEmail(body.body, trackingRes.id),
   });
 
   // Check if email was sent
-  if (!resend_email.data?.id) {
+  if (!send_email.data?.id) {
     return NextResponse.json({
       message: "Failed to send email",
-      error: resend_email.error,
+      error: send_email.error,
     });
   }
 
@@ -43,13 +50,16 @@ export async function POST(req: Request) {
       to: body.to_address,
       subject: body.subject,
       body: body.body,
-      provider_email_id: resend_email.data.id,
+      provider_email_id: send_email.data.id,
     },
   });
 
-  const trackingRes = await prisma.tracking.create({
+  // Update tracking with email id
+  await prisma.tracking.update({
+    where: {
+      id: trackingRes.id,
+    },
     data: {
-      userId: userId!,
       emailId: emailRes.id,
     },
   });
@@ -59,7 +69,7 @@ export async function POST(req: Request) {
     data: {
       email: emailRes,
       tracking: trackingRes,
-      resend_email,
+      send_email,
     },
   });
 }
