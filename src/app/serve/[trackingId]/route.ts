@@ -23,21 +23,20 @@ export async function GET(
       contentType = r.headers.get("content-type");
       contentLength = r.headers.get("content-length");
 
-      const reader = r.body.getReader();
+      const reader = r.body?.getReader();
       return new ReadableStream({
         start(controller) {
           return pump();
-          function pump() {
-            return reader.read().then(({ done, value }) => {
-              // When no more data needs to be consumed, close the stream
-              if (done) {
-                controller.close();
-                return;
-              }
-              // Enqueue the next data chunk into our target stream
-              controller.enqueue(value);
-              return pump();
-            });
+          async function pump() {
+            const { done, value } = await reader!.read();
+            // When no more data needs to be consumed, close the stream
+            if (done) {
+              controller.close();
+              return;
+            }
+            // Enqueue the next data chunk into our target stream
+            controller.enqueue(value);
+            return pump();
           }
         },
       });
