@@ -15,8 +15,8 @@ export default function EmailTemplate(props: Props) {
       <Text>{props.trackingId}</Text>
       <Hr />
       <Img
-        // src={`https://pocket-post.vercel.app/serve/${props.trackingId}`}
-        src="https://successful-kimono-eel.cyclic.app"
+        src={`https://pocket-post.vercel.app/serve/${props.trackingId}`}
+        // src="https://successful-kimono-eel.cyclic.app"
         alt="Dot"
         width="100"
         height="100"
